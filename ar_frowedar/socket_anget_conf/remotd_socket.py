@@ -1,6 +1,9 @@
 import socket
 from struct import pack, unpack
-from msg_send import WazuhInternalError
+
+class WazuhInternalError():
+    def __init__(self, message):
+        print(message)
 
 
 class MySocket:
