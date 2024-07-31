@@ -108,7 +108,11 @@ def process_agents(agent_list, timeout=5):
     return responses
 
 if __name__ == "__main__":
-    agent_list = ['001', '013']
+    agent_list = []
+    for i in range(1,1001):
+        agent_list.append(i)
+    
+    
     responses = process_agents(agent_list)
 
     for agent_id, rec_msg_ok, rec_msg in responses:
