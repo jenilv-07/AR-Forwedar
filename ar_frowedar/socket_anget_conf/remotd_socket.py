@@ -63,10 +63,12 @@ GETCONFIG_COMMAND = "getconfig"
 # Simple socket message
 msg = f"{str(agent_id).zfill(3)} {component} {GETCONFIG_COMMAND} {configuration}"
 
+print("encodede MSG : ",msg.encode)
 
 # Socket connection
 try:
     s = MySocket(dest_socket)
+    print(f"conneced to the socket : {dest_socket}")
 except WazuhInternalError:
     print("wazuh WazuInternalError ------------------------------------")
 except Exception as unhandled_exc:
