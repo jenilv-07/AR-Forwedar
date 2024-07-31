@@ -64,7 +64,7 @@ GETCONFIG_COMMAND = "getconfig"
 # Simple socket message
 msg = f"{str(agent_id).zfill(3)} {component} {GETCONFIG_COMMAND} {configuration}"
 
-        # Socket connection
+# Socket connection
 try:
     s = MySocket(dest_socket)
 except WazuhInternalError:
@@ -74,7 +74,7 @@ except Exception as unhandled_exc:
 
 # Send message
 try:
-    s.send(msg.enode())
+    s.send(msg.encode)
     print("-------------- SEND THE MSG ----------------")
 except Exception as e:
     print(f"ERROR : {e}")
