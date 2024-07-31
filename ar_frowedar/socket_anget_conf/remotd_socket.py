@@ -1,6 +1,7 @@
 import socket
 from struct import pack, unpack
 from multiprocessing import Process
+import time
 
 class WazuhInternalError(Exception):
     pass
@@ -52,7 +53,7 @@ class MySocket:
         except Exception as e:
             print(f"ERROR: {e}")
 
-def handle_agent(agent_id):
+def handle_agent(agent_id, response_queue):
     dest_socket = "/var/ossec/queue/sockets/remote"
     component = 'com'
     configuration = 'active-response'
@@ -62,7 +63,6 @@ def handle_agent(agent_id):
 
     print(f"Encoded MSG for agent {agent_id}: {msg.encode()}")
 
-    # Socket connection
     try:
         with MySocket(dest_socket) as s:
             print(f"Connected to the socket: {dest_socket}")
@@ -75,19 +75,41 @@ def handle_agent(agent_id):
             rec_msg_ok, rec_msg = s.receive().decode().split(" ", 1)
             print("--------------- MSG RECV SUCCESSFULLY -----------------")
             print(f"rec_msg_ok: {rec_msg_ok} | rec_msg: {rec_msg}")
+
+            response_queue.put((agent_id, rec_msg_ok, rec_msg))
     except WazuhInternalError:
         print("WazuhInternalError ------------------------------------")
+        response_queue.put((agent_id, "error", "WazuhInternalError"))
     except Exception as unhandled_exc:
         print(f"ERROR: {unhandled_exc}")
+        response_queue.put((agent_id, "error", str(unhandled_exc)))
 
-if __name__ == "__main__":
-    agent_list = ['001', '013','014']
+def process_agents(agent_list, timeout=5):
+    from multiprocessing import Queue
+
     processes = []
+    response_queue = Queue()
 
     for agent_id in agent_list:
-        p = Process(target=handle_agent, args=(agent_id,))
+        p = Process(target=handle_agent, args=(agent_id, response_queue))
         processes.append(p)
         p.start()
 
     for p in processes:
-        p.join()
+        p.join(timeout=timeout)
+        if p.is_alive():
+            p.terminate()
+            response_queue.put((p.name, "ok", "Response timeout"))
+
+    responses = []
+    while not response_queue.empty():
+        responses.append(response_queue.get())
+
+    return responses
+
+if __name__ == "__main__":
+    agent_list = ['001', '013']
+    responses = process_agents(agent_list)
+
+    for agent_id, rec_msg_ok, rec_msg in responses:
+        print(f"Agent {agent_id} - rec_msg_ok: {rec_msg_ok} | rec_msg: {rec_msg}")
