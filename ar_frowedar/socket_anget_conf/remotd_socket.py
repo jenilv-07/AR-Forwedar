@@ -64,6 +64,8 @@ GETCONFIG_COMMAND = "getconfig"
 # Simple socket message
 msg = f"{str(agent_id).zfill(3)} {component} {GETCONFIG_COMMAND} {configuration}"
 
+b_msg = bytes(msg,'utf-8')
+
 # Socket connection
 try:
     s = MySocket(dest_socket)
