@@ -36,7 +36,6 @@ class MySocket:
     def send(self, msg_bytes, header_format="<I"):
         if not isinstance(msg_bytes, bytes):
             print("Type must be bytes")
-        
 
         try:
             sent = self.s.send(pack(header_format, len(msg_bytes)) + msg_bytes)
@@ -64,7 +63,6 @@ GETCONFIG_COMMAND = "getconfig"
 # Simple socket message
 msg = f"{str(agent_id).zfill(3)} {component} {GETCONFIG_COMMAND} {configuration}"
 
-b_msg = bytes(msg,'utf-8')
 
 # Socket connection
 try:
@@ -76,7 +74,7 @@ except Exception as unhandled_exc:
 
 # Send message
 try:
-    s.send(msg.encode)
+    s.send(msg_bytes=msg.encode())
     print("-------------- SEND THE MSG ----------------")
 except Exception as e:
     print(f"ERROR : {e}")
