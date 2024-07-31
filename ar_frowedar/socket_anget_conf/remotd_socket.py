@@ -66,7 +66,7 @@ msg = f"{str(agent_id).zfill(3)} {component} {GETCONFIG_COMMAND} {configuration}
 
         # Socket connection
 try:
-    s = MySocket.WazuhSocket(dest_socket)
+    s = MySocket(dest_socket)
 except WazuhInternalError:
     print("wazuh WazuInternalError ------------------------------------")
 except Exception as unhandled_exc:
