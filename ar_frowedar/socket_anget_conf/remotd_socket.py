@@ -84,7 +84,7 @@ def handle_agent(agent_id, response_queue):
         print(f"ERROR: {unhandled_exc}")
         response_queue.put((agent_id, "error", str(unhandled_exc)))
 
-def process_agents(agent_list, timeout=5):
+def process_agents(agent_list, timeout=20):
     from multiprocessing import Queue
 
     processes = []
