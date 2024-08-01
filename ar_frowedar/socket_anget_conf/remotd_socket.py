@@ -107,13 +107,15 @@ def process_agents(agent_list, timeout=20):
 
     return responses
 
-if __name__ == "__main__":
-    agent_list = []
-    for i in range(1,1001):
-        agent_list.append(i)
+# if __name__ == "__main__":
+#     agent_list = []
+#     for i in range(1,1001):
+#         agent_list.append(i)
     
     
-    responses = process_agents(agent_list)
+#     responses = process_agents(agent_list)
 
-    for agent_id, rec_msg_ok, rec_msg in responses:
-        print(f"Agent {agent_id} - rec_msg_ok: {rec_msg_ok} | rec_msg: {rec_msg}")
+#     for agent_id, rec_msg_ok, rec_msg in responses:
+#         print(f"Agent {agent_id} - rec_msg_ok: {rec_msg_ok} | rec_msg: {rec_msg}")
+agent_list = ['001','013']
+responses = process_agents(agent_list)
