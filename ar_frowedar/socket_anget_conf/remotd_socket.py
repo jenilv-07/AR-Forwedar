@@ -84,16 +84,16 @@ def handle_agent(agent_id, response_queue):
         print(f"ERROR: {unhandled_exc}")
         response_queue.put((agent_id, "error", str(unhandled_exc)))
 
-def process_agents(agent_list, timeout=4):
+def process_agents(agent_id, timeout=20):
     from multiprocessing import Queue
 
     processes = []
     response_queue = Queue()
 
-    for agent_id in agent_list:
-        p = Process(target=handle_agent, args=(agent_id, response_queue))
-        processes.append(p)
-        p.start()
+    
+    p = Process(target=handle_agent, args=(agent_id, response_queue))
+    processes.append(p)
+    p.start()
 
     for p in processes:
         p.join(timeout=timeout)
@@ -106,6 +106,30 @@ def process_agents(agent_list, timeout=4):
         responses.append(response_queue.get())
 
     return responses
+
+
+# def process_agents(agent_list, timeout=4):
+#     from multiprocessing import Queue
+
+#     processes = []
+#     response_queue = Queue()
+
+#     for agent_id in agent_list:
+#         p = Process(target=handle_agent, args=(agent_id, response_queue))
+#         processes.append(p)
+#         p.start()
+
+#     for p in processes:
+#         p.join(timeout=timeout)
+#         if p.is_alive():
+#             p.terminate()
+#             response_queue.put((p.name, "ok", "Response timeout"))
+
+#     responses = []
+#     while not response_queue.empty():
+#         responses.append(response_queue.get())
+
+#     return responses
 
 # if __name__ == "__main__":
 #     agent_list = []
